@@ -1,0 +1,78 @@
+<html>  
+	<head>
+    <title>It's meal time!</title>
+
+    <script type="text/javascript" src="js/jq.js"></script>
+	<script type="text/javascript" src="js/sb-1.3.0.js"></script>
+    <script type="text/javascript">
+     	//Web (javascript) Code
+
+     	//setup spacebrew, call setup function
+		$(window).on("load", setup);  
+	      
+		var sb
+			, app_name = "farmer"
+			;
+
+		function setup (){
+
+			var random_id = "0000" + Math.floor(Math.random() * 10000)
+				;
+
+			app_name = app_name + ' ' + random_id.substring(random_id.length-4);
+
+			// create spacebrew client object
+			sb = new Spacebrew.Client();
+
+			// set the base description
+			sb.name(app_name);
+			sb.description("Web to Processing");
+
+			// configure the publication and subscription feeds
+			sb.addPublish( "feed", "point", "1,1" );
+			sb.connect();
+
+		}	
+
+
+        function init() {
+          var touchzone = document.getElementById("myCanvas");
+          var context = touchzone.getContext('2d');
+          context.fillStyle = '#d2f3a9';
+          context.fillRect(0,0,960,720);
+          touchzone.addEventListener("touchstart", draw, false);  //call draw
+
+		}	
+
+   		function draw() {
+           var canvas = document.getElementById('myCanvas');
+      		if(canvas.getContext) {
+        		var ctx = canvas.getContext("2d");
+        		ctx.fillStyle = '#000000';
+        		ctx.fillRect (event.touches[0].pageX, event.touches[0].pageY, 5, 5);
+
+				var sPoint = event.touches[0].pageX + "," + event.touches[0].pageY;
+        		// when the mobile screen was touched, it sends a point-message to spacebrew
+        		sb.send("feed", "point", sPoint);
+
+
+      		}
+    	}
+
+		
+		function onCustomMessage( name, value, type ){
+	
+		}
+
+	</script>
+	</head>
+
+	<body onload="init()">
+		
+		<canvas id="myCanvas" width="960" height="720">
+
+		</canvas>
+
+	</body>
+
+</html>
